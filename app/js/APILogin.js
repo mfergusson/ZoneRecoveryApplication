@@ -7,6 +7,8 @@ api = a57cfa42db36dcb9fbc22584782bcbab7e8c5de5
 
 (function(ZoneRecovery) {
 
+  'use strict';
+
     function APILogin(authManager) {
         this.authManager = authManager;
         this.setupEventListeners();
@@ -68,7 +70,7 @@ api = a57cfa42db36dcb9fbc22584782bcbab7e8c5de5
 
         var accountSubscription = new Subscription(
             'MERGE',
-            ['ACCOUNT:'+ localStorage.getItem('currentAccountId')], 
+            ['ACCOUNT:'+ localStorage.getItem('currentAccountId')],
             ['FUNDS', 'PNL']);
 
         accountSubscription.addListener({

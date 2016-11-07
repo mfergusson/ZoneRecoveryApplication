@@ -1,5 +1,7 @@
 (function(ZoneRecovery) {
 
+  'use strict';
+
   function OpenPositions(authManager) {
     this.authManager = authManager;
     this.openPositions = [];
@@ -27,7 +29,7 @@
   };
 
   OpenPositions.prototype.displayOpenPositions = function() {
-    if (this.getOpenPositions.readyState < 4) {  
+    if (this.getOpenPositions.readyState < 4) {
       return;
     }
 
@@ -69,7 +71,7 @@
       return this.openPositions.find(function(openPosition) {
         return openPosition.position.dealId === dealId;
       });
-    } 
+    }
   }
 
   OpenPositions.prototype.handleClosePosition = function(element) {

@@ -1,5 +1,7 @@
 (function (ZoneRecovery) {
 
+  'use strict';
+
   function MarketTransactions(authManager){
     this.authManager = authManger;
     this.cst = this.authManager.getCST();

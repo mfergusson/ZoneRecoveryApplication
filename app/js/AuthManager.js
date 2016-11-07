@@ -1,5 +1,7 @@
 (function(ZoneRecovery) {
 
+  'use strict';
+
   function AuthManager() { }
 
   //getCST from localStorage

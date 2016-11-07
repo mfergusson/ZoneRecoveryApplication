@@ -1,5 +1,7 @@
 (function(ZoneRecovery) {
 
+  'use strict';
+
     function Balance(authManager) {
         this.authManager = authManager;
         this.lsClient;
