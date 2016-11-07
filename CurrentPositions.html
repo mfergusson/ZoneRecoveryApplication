@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+      <meta charset="UTF-8">
+      <title>Zone Recovery App</title>
+      <link href='https://fonts.googleapis.com/css?family=Roboto+Condensed' rel='stylesheet' type='text/css' />
+      <link rel="stylesheet" type="text/css" href="app/css/CurrentPositions.css">
+  </head>
+  <body>
+
+    <div class="Application">
+
+        <div class="logout" id="logoutButton">
+            <button onclick="logout()">Logout</button>
+        </div>
+
+        <div class="Title" id="Balance">
+            <p id="balanceInput">Balance:</p>
+        </div>
+
+        <div class="Tabs">
+
+            <div id="Market-Transactions">
+                <a href="MarketTransactions.html"><label id="tab1">Market Transactions</label></a>
+            </div>
+
+            <div id="Current-Positions">
+                <a href="CurrentPositions.html"><label id="tab2">Current Positions</label></a>
+            </div>
+
+        </div>
+
+          <div id="positions" class="Table">
+              <table id='Table'>
+                  <th>Market</th>
+                  <th>Direction</th>
+                  <th>Deal Size</th>
+                  <th>Open level</th>
+                  <th>Percentage Change</th>
+                  <th></th>
+              </table>
+          </div>
+
+    </div>
+
+  <script src="vendor/lightstreamer_global.js"></script> 
+  <script>var ZoneRecovery = ZoneRecovery || {};</script>
+  <script src="app/js/AuthManager.js"></script>
+  <script src="app/js/OpenPositions.js"></script>
+  <script src="app/js/Balance.js"></script>
+  <script src="app/js/APILogin.js"></script>
+  <script>
+    var authManager = new ZoneRecovery.AuthManager(),
+      openPositions = new ZoneRecovery.OpenPositions(authManager),
+      balance = new ZoneRecovery.Balance(authManager);
+  </script>
+
+  </body>
+</html>

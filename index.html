@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Login</title>
+        <link href='https://fonts.googleapis.com/css?family=Roboto+Condensed' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" href="app/css/LoginStyles.css">
+    </head>
+    <body>
+        <div class="login-page">
+            <div class="form">
+                <div class="login-form">
+                    <input type="text" id="username" placeholder="Username">
+                    <input type="password" id="password" placeholder="Password">
+                    <input type="text" id="APIkey" placeholder="API Key">
+                    <button type="button" id="Submit-Button">Login</button>
+                    <p></p>
+                    <button type="button" id="fillForm">Fill form</button>
+                </div>
+            </div>
+        </div>
+
+        <script src="vendor/lightstreamer_global.js"></script>
+        <script>var ZoneRecovery = ZoneRecovery || {};</script>
+        <script src="app/js/APILogin.js"></script>
+        <script src="app/js/AuthManager.js"></script>
+        <script>
+            var authManager = new ZoneRecovery.AuthManager(),
+                APILogin = new ZoneRecovery.APILogin();
+        </script>
+    </body>
+</html>

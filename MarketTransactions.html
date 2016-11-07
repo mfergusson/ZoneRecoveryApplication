@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Market Transactions</title>
+    <link href='https://fonts.googleapis.com/css?family=Roboto+Condensed' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="app/css/MarketTransactions.css">
+    <link rel="stylesheet" type="text/css" href="app/css/Alerts.css">
+</head>
+
+    <body>
+        <div class="Application">
+
+            <div class="logout" id="logoutButton">
+                <button onclick="logout()">Logout</button>
+            </div>
+
+            <div class="Title" id="Balance">
+                <p>Balance: £<span id="balanceStream"></span></p>
+            </div>
+
+            <div class='Title' id='PNL'>
+                <p>Profit/Loss: £<span id='profitLossStream'></span></p>
+            </div>
+
+            <div class="Tabs">
+
+                <div id="Market-Transactions">
+                    <a href="MarketTransactions.html"><label id="tab1">Market Transactions</label></a>
+                </div>
+
+                <div id="Current-Positions">
+                    <a href="CurrentPositions.html"><label id="tab2">Current Positions</label></a>
+                </div>
+
+            </div>
+
+            <div class="Left-Panel">
+
+                <div class="Title" id="Currency">
+                    <p>Currency:</p>
+                    <select id="currency-option">
+                        <option>GBP</option>
+                        <option>$</option>
+                        <option>€</option>
+                    </select>
+                </div>
+
+                <div class="Title" id="Volatile-Markets">
+                    <p>Volatile Markets:</p>
+                    <select id="markets"></select>
+                </div>
+
+                <div class="Title" id="Initial-Bet-Size">
+                    <p>Initial Bet Size:</p>
+                    <input type="number" id="Bet-Size-Amount">
+                </div>
+
+                <div class="Title" id="Stop-Point">
+                    <p>Stop Point:</p>
+                    <input type="number" id="Stop-Point-Amount">
+                </div>
+
+                <div class="Title" id="Zone-Recovery-Value">
+                    <p>Zone Recovery Value:</p>
+                    <input type="number" id="Recovery-Amount">
+                </div>
+
+                <div class="Title" id="Direction">
+                    <p>Direction:</p>
+                    <select id="directions">
+                        <option>BUY</option>
+                        <option>SELL</option>
+                    </select>
+                </div>
+
+                <div class="Title" id="Predicted-Total-Profit">
+                    <p>Predicted Total Profit:</p>
+                </div>
+
+                <div id="Submit-Button">
+                    <button id="submitButton" onclick="submitTicket()">Submit</button>
+                </div>
+
+                <div class="hidden" id="sk-circle">
+                  <div class="sk-circle">
+                    <div class="sk-circle1 sk-child"></div>
+                    <div class="sk-circle2 sk-child"></div>
+                    <div class="sk-circle3 sk-child"></div>
+                    <div class="sk-circle4 sk-child"></div>
+                    <div class="sk-circle5 sk-child"></div>
+                    <div class="sk-circle6 sk-child"></div>
+                    <div class="sk-circle7 sk-child"></div>
+                    <div class="sk-circle8 sk-child"></div>
+                    <div class="sk-circle9 sk-child"></div>
+                    <div class="sk-circle10 sk-child"></div>
+                    <div class="sk-circle11 sk-child"></div>
+                    <div class="sk-circle12 sk-child"></div>
+                  </div>
+              </div>
+
+                <div class="info hidden">Info</div>
+                <div class="success hidden" id='success'>Deal Confirmed!</div>
+                <div class="warning hidden" id='warning'>Invalid bet size, stop point or zone recovery value</div>
+                <div class="error hidden" id='error'>Could not place deal: <div id='errorMessage'></div> </div>
+          </div>
+        </div>
+
+
+    <script src="vendor/lightstreamer_global.js"></script>
+    <script src="vendor/DealReferenceGenerator.js"></script>
+    <script>var ZoneRecovery = ZoneRecovery || {};</script>
+    <script src="app/js/AuthManager.js"></script>
+    <script src="app/js/APILogin.js"></script>
+    <script src="app/js/Balance.js"></script>
+    <script src="app/js/MarketTransactions.js"></script>
+    <script>
+        var authManager = new ZoneRecovery.AuthManager(),
+            balance = new ZoneRecovery.Balance(authManager);
+    </script>
+
+    </body>
+</html>
