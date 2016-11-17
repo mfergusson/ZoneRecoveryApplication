@@ -11,9 +11,7 @@
     <body>
         <div class="Application">
 
-            <div class="logout" id="logoutButton">
-                <button onclick="logout()">Logout</button>
-            </div>
+            <button id="logoutBtn">Logout</button>
 
             <div class="Title" id="Balance">
                 <p>Balance: £<span id="balanceStream"></span></p>
@@ -112,11 +110,14 @@
     <script>var ZoneRecovery = ZoneRecovery || {};</script>
     <script src="app/js/AuthManager.js"></script>
     <script src="app/js/APILogin.js"></script>
+    <script src="app/js/LightstreamerSubscriptions.js"></script>
     <script src="app/js/Balance.js"></script>
     <script src="app/js/MarketTransactions.js"></script>
     <script>
         var authManager = new ZoneRecovery.AuthManager(),
-            balance = new ZoneRecovery.Balance(authManager);
+            lightstreamerSubscriptions = new ZoneRecovery.LightstreamerSubscriptions(),
+            balance = new ZoneRecovery.Balance(authManager, lightstreamerSubscriptions),
+            marketTransactions = new ZoneRecovery.MarketTransactions(authManager, lightstreamerSubscriptions);
     </script>
 
     </body>

@@ -2,8 +2,9 @@
 
   'use strict';
 
-  function MarketTransactions(authManager){
-    this.authManager = authManger;
+  function MarketTransactions(authManager, lightstreamerSubscriptions){
+    this.authManager = authManager;
+    this.lightstreamerSubscriptions = lightstreamerSubscriptions;
     this.cst = this.authManager.getCST();
     this.apiKey = this.authManager.getApiKey();
     this.securityToken = this.authManager.getXST();
@@ -12,41 +13,43 @@
   }
 
   MarketTransactions.prototype.init = function() {
-    this.lsServerConnect();
-    this.getAllPositions();
+    this.authManager.isValidUser();
     this.populateMarketBox();
+    this.setupEventListeners();
   };
 
+  MarketTransactions.prototype.setupEventListeners = function() {
+      document.getElementById("logoutBtn").addEventListener('click', this.authManager.invalidateSession.bind(this));
+  };
 
   MarketTransactions.prototype.populateMarketBox = function() {
 
       var getMarkets = new XMLHttpRequest();
 
-      getMarkets.onreadystatechange = marketBox;
+      getMarkets.onreadystatechange = marketBox.bind(this, getMarkets);
       getMarkets.onload = isValidUser;
 
       getMarkets.open('GET', 'https://web-api.ig.com/gateway/deal/markets?searchTerm=ftse', true);
 
-      ZoneRecovery.setRequestHeader(getMarkets);
+      this.authManager.setRequestHeader(getMarkets);
 
       getMarkets.send('');
+  };
 
-      function marketBox() {
-          if (getMarkets.readyState < 4) {
-              return;
-          }
+  MarketTransactions.prototype.setupMarkets = function(getMarkets) {
+      if (getMarkets.readyState < 4) {
+          return;
+      }
 
-          if (getMarkets.status === 200) {
+      if (getMarkets.status === 200) {
+           var response = JSON.parse(getMarkets.responseText),
+            markets = response.markets;
 
-               var response = JSON.parse(getMarkets.responseText);
-               markets = response.markets;
-
-               for (var i = 0; i < response.markets.length; i++) {
-                   var add = response.markets[i].instrumentName,
-                       epic = response.markets[i].epic;
-                   document.getElementById('markets').options.add(new Option(add, epic));
-               }
-            getBalance();
+           for (var i = 0; i < response.markets.length; i++) {
+               var add = response.markets[i].instrumentName,
+                   epic = response.markets[i].epic;
+               document.getElementById('markets').options.add(new Option(add, epic));
+           }
       }
   };
 
@@ -56,18 +59,9 @@
 
       balance.open('GET', 'https://web-api.ig.com/gateway/deal/accounts', true);
 
-      ZoneRecovery.setRequestHeader();
+      this.authManager.setRequestHeader();
 
       balance.send('');
-
-      }
-
-      function isValidUser(){
-          if (!localStorage.getItem('CST')) {
-              alert('Please login!');
-              window.location='Login.html';
-          }
-      }
   };
 
   MarketTransactions.prototype.submitTicket = function() {
@@ -176,4 +170,7 @@
           }
       }
   };
+
+  ZoneRecovery.MarketTransactions = MarketTransactions;
+
 })(ZoneRecovery || {})

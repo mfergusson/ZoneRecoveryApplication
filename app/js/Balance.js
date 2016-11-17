@@ -2,37 +2,41 @@
 
   'use strict';
 
-    function Balance(authManager) {
+    function Balance(authManager, LightstreamerSubscriptions) {
         this.authManager = authManager;
-        this.lsClient;
-        this.getBalance();
+        this.lightstreamerSubscriptions = lightstreamerSubscriptions;
+        this.setupLSBalanceConnection();
     }
 
-    Balance.prototype.getBalance = function() {
+    Balance.prototype.setupLSBalanceConnection = function(lsClient) {
+        var accountSubscription = new Subscription(
+            'MERGE',
+            ['ACCOUNT:'+ localStorage.getItem('currentAccountId')],
+            ['FUNDS', 'PNL']);
 
-        var accBalance = new XMLHttpRequest();
-
-        accBalance.onload = this.insertBalance.bind(this, accBalance);
-
-        accBalance.open('GET', 'https://web-api.ig.com/gateway/deal/accounts', true);
-
-        accBalance.setRequestHeader("Version", "1");
-
-        this.authManager.setRequestHeaders(accBalance);
-
-        accBalance.send('');
-    };
-
-    Balance.prototype.insertBalance = function(accBalance) {
-        if (accBalance.readyState < 4) {
-            return;
-        }
-
-        if (accBalance.status === 200) {
-            //JSON.parse(accBalance.response);
-        } else {
-            return;
-        }
+        accountSubscription.addListener({
+            onSubscription: function () {
+                console.log('subscribed');
+            },
+            onUnsubscription: function () {
+                console.log('unsubscribed');
+            },
+            onSubscriptionError: function (code, message) {
+                console.log('subscription failure: ' + code + " message: " + message);
+            },
+            onItemUpdate: function (updateInfo) {
+                updateInfo.forEachField(function (fieldName, fieldPos, value) {
+                    switch(fieldName) {
+                        case 'FUNDS':
+                            document.getElementById('balanceStream').innerText = value;
+                            break;
+                        case 'PNL':
+                            document.getElementById('profitLossStream').innerText = value;
+                            break;
+                    }
+                });
+            }
+        });
     };
 
     ZoneRecovery.Balance = Balance;

@@ -11,7 +11,7 @@
 
   //getXST from localStorage
   AuthManager.prototype.getXST = function() {
-    return localStorage.getItem('securityToken');
+    return localStorage.getItem('XST');
   };
 
   //getApiKey from localStorage
@@ -20,13 +20,13 @@
   };
 
   //setRequestHeaders when sending off AJAX requests
-  AuthManager.prototype.setRequestHeaders = function(request) {
+  AuthManager.prototype.setRequestHeaders = function(request, apiKey) {
     //getCST and XST
     var CST = this.getCST(),
       XST = this.getXST();
 
     //setRequestHeaders
-    request.setRequestHeader("X-IG-API-KEY", this.getApiKey());
+    request.setRequestHeader("X-IG-API-KEY", apiKey || this.getApiKey());
     request.setRequestHeader("Content-Type", "application/json; charset=UTF-8");
     request.setRequestHeader("Accept", "application/json; charset=UTF-8");
 
@@ -37,12 +37,29 @@
   };
 
   //send items to localStorage
-  AuthManager.prototype.setLocalStorage = function() {
-    localStorage.setItem("securityToken", SecurityToken);
+  AuthManager.prototype.setSession = function(CST, XST, apiKey, currentAccountId, lightstreamerEndpoint) {
+    localStorage.setItem("XST", XST);
     localStorage.setItem("CST", CST);
-    localStorage.setItem("APIkey", APIkey);
-    localStorage.setItem("currentAccountId", data.currentAccountId);
-    localStorage.setItem("lightstreamerEndpoint", data.lightstreamerEndpoint);
+    localStorage.setItem("APIkey", apiKey);
+    localStorage.setItem("currentAccountId", currentAccountId);
+    localStorage.setItem("lightstreamerEndpoint", lightstreamerEndpoint);
+  };
+
+  AuthManager.prototype.invalidateSession = function() {
+      localStorage.clear();
+      sessionStorage.clear();
+      window.location='index.html';
+
+      request.close('DELETE', 'https://web-api.ig.com/gateway/deal/session', true);
+
+      this.lsClient.closeConnection();
+  };
+
+  AuthManager.prototype.isValidUser = function() {
+      if (!this.getCST() || !this.getXST()) {
+          alert('Please login!');
+          window.location='Login.html';
+      }
   };
 
   ZoneRecovery.AuthManager = AuthManager;
