@@ -2,8 +2,9 @@
 
   'use strict';
 
-    function LightstreamerSubscriptions(authManager, balance) {
+    function LightstreamerSubscriptions(authManager) {
         this.authManager = authManager;
+        this.lsClient = null;
         this.lsServerConnect();
     }
 
@@ -14,8 +15,8 @@
         if (lsEndPoint) {
             this.lsClient = new LightstreamerClient(lsEndPoint);
 
-            this.lsClient.connectionDetails.setUser(localStorage.getItem('currentAccountId'));
-            this.lsClient.connectionDetails.setPassword("CST-" + localStorage.getItem('CST') + "|XST-" + localStorage.getItem('securityToken'));
+            this.lsClient.connectionDetails.setUser(this.authManager.getCurrentAccountId());
+            this.lsClient.connectionDetails.setPassword("CST-" + this.authManager.getCST() + "|XST-" + this.authManager.getXST());
 
             this.lsClient.addListener({
                 onListenStart: function () {
@@ -25,6 +26,8 @@
                     console.log('Lightstreamer connection status:' + status);
                 }
             });
+
+            this.lsClient.connect();
         }
     };
 

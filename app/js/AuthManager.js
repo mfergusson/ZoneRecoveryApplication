@@ -19,7 +19,15 @@
     return localStorage.getItem('APIkey');
   };
 
-  //setRequestHeaders when sending off AJAX requests
+  AuthManager.prototype.getCurrentAccountId = function() {
+    return localStorage.getItem('currentAccountId');
+  };
+
+  /**
+   * setRequestHeaders when sending off AJAX requests
+   * @param {Object} request
+   * @param {String} [apiKey]
+   */
   AuthManager.prototype.setRequestHeaders = function(request, apiKey) {
     //getCST and XST
     var CST = this.getCST(),

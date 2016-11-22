@@ -10,12 +10,16 @@
 
     <div class="Application">
 
-        <div class="logout" id="logoutButton">
-            <button onclick="logout()">Logout</button>
+        <div class="logout" id="logoutBtn">
+            <button>Logout</button>
         </div>
 
         <div class="Title" id="Balance">
-            <p id="balanceInput">Balance:</p>
+            <p>Balance: £<span id="balanceStream"></span></p>
+        </div>
+
+        <div class='Title' id='PNL'>
+            <p>Profit/Loss: £<span id='profitLossStream'></span></p>
         </div>
 
         <div class="Tabs">
@@ -43,16 +47,18 @@
 
     </div>
 
-  <script src="vendor/lightstreamer_global.js"></script> 
+  <script src="vendor/lightstreamer_global.js"></script>
   <script>var ZoneRecovery = ZoneRecovery || {};</script>
   <script src="app/js/AuthManager.js"></script>
   <script src="app/js/OpenPositions.js"></script>
+  <script src="app/js/LightstreamerSubscriptions.js"></script>
   <script src="app/js/Balance.js"></script>
   <script src="app/js/APILogin.js"></script>
   <script>
     var authManager = new ZoneRecovery.AuthManager(),
+      lightstreamerSubscriptions = new ZoneRecovery.LightstreamerSubscriptions(authManager),
       openPositions = new ZoneRecovery.OpenPositions(authManager),
-      balance = new ZoneRecovery.Balance(authManager);
+      balance = new ZoneRecovery.Balance(authManager, lightstreamerSubscriptions.lsClient);
   </script>
 
   </body>

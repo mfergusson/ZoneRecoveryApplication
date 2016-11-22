@@ -5,13 +5,23 @@
   function OpenPositions(authManager) {
     this.authManager = authManager;
     this.openPositions = [];
+    this.lightstreamerSubscriptions = lightstreamerSubscriptions;
     this.getPositions();
+    this.init();
   }
 
+  OpenPositions.prototype.init = function() {
+    this.setupEventListeners();
+  };
+
+  OpenPositions.prototype.setupEventListeners = function() {
+      document.getElementById("logoutBtn").addEventListener('click', this.authManager.invalidateSession.bind(this));
+  };
+
   OpenPositions.prototype.getPositions = function() {
-    var CST = localStorage.getItem('CST'),
-      API = localStorage.getItem('APIkey'),
-      securityToken = localStorage.getItem('securityToken');
+    var CST = this.authManager.getCST(),
+      API = this.authManager.getApiKey(),
+      XST = this.authManager.getXST();
 
     this.getOpenPositions = new XMLHttpRequest();
 
@@ -19,11 +29,7 @@
 
     this.getOpenPositions.open('GET', 'https://web-api.ig.com/gateway/deal/positions', true);
 
-    this.getOpenPositions.setRequestHeader("X-IG-API-KEY", API);
-    this.getOpenPositions.setRequestHeader("X-SECURITY-TOKEN", securityToken);
-    this.getOpenPositions.setRequestHeader("CST", CST);
-    this.getOpenPositions.setRequestHeader("Content-Type", "application/json; charset=UTF-8");
-    this.getOpenPositions.setRequestHeader("Accept", "application/json; charset=UTF-8");
+    this.authManager.setRequestHeaders(this.getOpenPositions);
 
     this.getOpenPositions.send('');
   };

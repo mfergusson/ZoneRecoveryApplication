@@ -77,7 +77,7 @@
                 </div>
 
                 <div id="Submit-Button">
-                    <button id="submitButton" onclick="submitTicket()">Submit</button>
+                    <button id="submitButton">Submit</button>
                 </div>
 
                 <div class="hidden" id="sk-circle">
@@ -115,8 +115,8 @@
     <script src="app/js/MarketTransactions.js"></script>
     <script>
         var authManager = new ZoneRecovery.AuthManager(),
-            lightstreamerSubscriptions = new ZoneRecovery.LightstreamerSubscriptions(),
-            balance = new ZoneRecovery.Balance(authManager, lightstreamerSubscriptions),
+            lightstreamerSubscriptions = new ZoneRecovery.LightstreamerSubscriptions(authManager),
+            balance = new ZoneRecovery.Balance(authManager, lightstreamerSubscriptions.lsClient),
             marketTransactions = new ZoneRecovery.MarketTransactions(authManager, lightstreamerSubscriptions);
     </script>
 

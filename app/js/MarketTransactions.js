@@ -20,18 +20,18 @@
 
   MarketTransactions.prototype.setupEventListeners = function() {
       document.getElementById("logoutBtn").addEventListener('click', this.authManager.invalidateSession.bind(this));
+      document.getElementById("submitButton").addEventListener('click', this.submitTicket.bind(this));
   };
 
   MarketTransactions.prototype.populateMarketBox = function() {
 
       var getMarkets = new XMLHttpRequest();
 
-      getMarkets.onreadystatechange = marketBox.bind(this, getMarkets);
-      getMarkets.onload = isValidUser;
+      getMarkets.onreadystatechange = this.setupMarkets.bind(this, getMarkets);
 
       getMarkets.open('GET', 'https://web-api.ig.com/gateway/deal/markets?searchTerm=ftse', true);
 
-      this.authManager.setRequestHeader(getMarkets);
+      this.authManager.setRequestHeaders(getMarkets);
 
       getMarkets.send('');
   };
@@ -42,12 +42,13 @@
       }
 
       if (getMarkets.status === 200) {
-           var response = JSON.parse(getMarkets.responseText),
-            markets = response.markets;
+           var response = JSON.parse(getMarkets.responseText);
+              this.markets = response.markets;
 
            for (var i = 0; i < response.markets.length; i++) {
                var add = response.markets[i].instrumentName,
-                   epic = response.markets[i].epic;
+                   epic = response.markets[i].epic,
+                   expiry = response.markets[i].expiry;
                document.getElementById('markets').options.add(new Option(add, epic));
            }
       }
@@ -78,14 +79,14 @@
 
       var submitDeal = new XMLHttpRequest();
 
-      submitDeal.onreadystatechange = handleDeal;
+      submitDeal.onreadystatechange = this.handleDeal;
 
       submitDeal.open('POST', 'https://web-api.ig.com/gateway/deal/positions/otc', true);
 
-      ZoneRecovery.setRequestHeader();
+      this.authManager.setRequestHeaders(submitDeal);
       submitDeal.setRequestHeader("Version", "2");
 
-      var market = findMarket(epic);
+      var market = this.findMarket(epic);
 
       submitDeal.send(JSON.stringify(
           {
@@ -164,9 +165,9 @@
    };
 
   MarketTransactions.prototype.findMarket = function(epic) {
-      for (var i = 0, marketLength = markets.length; i < marketLength; i++) {
-          if (markets[i].epic === epic) {
-              return markets[i];
+      for (var i = 0, marketLength = this.markets.length; i < marketLength; i++) {
+          if (this.markets[i].epic === epic) {
+              return this.markets[i];
           }
       }
   };

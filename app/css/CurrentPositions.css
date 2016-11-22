@@ -41,7 +41,7 @@
     width: 650px;
     margin-bottom: 20px;
     margin-left: -140px;
-    margin-top: -10px;
+    margin-top: 1px;
 }
 
 .Tabs a {
@@ -116,6 +116,12 @@ Button {
 
 #Balance {
     margin-top: -70px;
+    float: right;
+    margin-left: 100px;
+}
+
+#PNL {
+    margin-top: -50px;
     float: right;
     margin-left: 100px;
 }
