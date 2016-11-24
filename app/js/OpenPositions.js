@@ -27,7 +27,7 @@
 
     this.getOpenPositions.onload = this.displayOpenPositions.bind(this);
 
-    this.getOpenPositions.open('GET', 'https://web-api.ig.com/gateway/deal/positions', true);
+    this.getOpenPositions.open('GET', 'https://demo-api.ig.com/gateway/deal/positions', true);
 
     this.authManager.setRequestHeaders(this.getOpenPositions);
 
@@ -83,33 +83,40 @@
   OpenPositions.prototype.handleClosePosition = function(element) {
     var dealId = element.target.getAttribute('data-dealId'),
       openPosition = this.findPosition(dealId),
-      position;
+      position,
+      market;
 
     if (openPosition) {
       position = openPosition.position;
+      market = openPosition.market;
 
       var closeCurrentPosition = new XMLHttpRequest();
 
-      closeCurrentPosition.open('DELETE', 'https://web-api.ig.com/gateway/deal/positions/otc', true);
+      closeCurrentPosition.open('POST', 'https://demo-api.ig.com/gateway/deal/positions/otc', true);
 
-      closeCurrentPosition.setRequestHeader("X-IG-API-KEY", localStorage.getItem('APIkey'));
-      closeCurrentPosition.setRequestHeader("X-SECURITY-TOKEN", localStorage.getItem('securityToken'));
-      closeCurrentPosition.setRequestHeader("CST", localStorage.getItem('CST'));
-      closeCurrentPosition.setRequestHeader("Content-Type", "application/json; charset=UTF-8");
-      closeCurrentPosition.setRequestHeader("Accept", "application/json; charset=UTF-8");
+      this.authManager.setRequestHeaders(closeCurrentPosition);
+      closeCurrentPosition.setRequestHeader("_method", "DELETE");
 
       closeCurrentPosition.send(JSON.stringify({
         dealId: position.dealId,
         epic: null,
         expiry: null,
-        direction: position.direction,
+        direction: this.swapPositionDirection(position.direction),
         size: position.dealSize,
         level: null,
         orderType: "MARKET",
         timeInForce: null,
-        quoteId: null
+        quoteId: null,
       }));
     }
+  };
+
+  /**
+   * Flips direction for position close rest request
+   * @param {String} direction
+   */
+  OpenPositions.prototype.swapPositionDirection = function(direction) {
+    return direction === 'BUY' ? 'SELL' : 'BUY';
   };
 
   ZoneRecovery.OpenPositions = OpenPositions;

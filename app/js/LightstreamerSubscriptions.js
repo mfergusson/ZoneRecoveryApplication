@@ -31,6 +31,17 @@
         }
     };
 
+    LightstreamerSubscriptions.prototype.subscribeToOPU = function() {
+      var currentAccountId = this.authManager.getCurrentAccountId(),
+          deletePositionsSubscription = new Subscription(
+            'DISTINCT'
+            [
+              'TRDAE': currentAccountId,
+              'Constant status': 'DELETED';
+            ]
+          )
+    };
+
     ZoneRecovery.LightstreamerSubscriptions = LightstreamerSubscriptions;
 
 })(ZoneRecovery || {})

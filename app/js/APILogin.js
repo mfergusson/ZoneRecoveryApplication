@@ -1,8 +1,8 @@
 /*
-web.ig.com
-username = therealmatt
+demo.ig.com
+username = mattsupport
 password = Welcome1
-api = a57cfa42db36dcb9fbc22584782bcbab7e8c5de5
+api = b1cf33b976cef6c5b3c80ab7c95d4fb8fa6c7739
 */
 
 (function(ZoneRecovery) {
@@ -26,9 +26,9 @@ api = a57cfa42db36dcb9fbc22584782bcbab7e8c5de5
             apiKey = document.getElementById("APIkey").value || null;
 
         request.onload = this.handleLoginSuccess.bind(this, request, apiKey);
-        request.onerror = this.handleLoginError.bind(this);
+        request.onerror = this.handleLoginError.bind(this, request);
 
-        request.open('POST', 'https://web-api.ig.com/gateway/deal/session', true);
+        request.open('POST', 'https://demo-api.ig.com/gateway/deal/session', true);
 
         authManager.setRequestHeaders(request, apiKey);
         request.setRequestHeader("Version", "2");
@@ -66,11 +66,11 @@ api = a57cfa42db36dcb9fbc22584782bcbab7e8c5de5
         }
     };
 
-    APILogin.prototype.handleLoginError = function() {
+    APILogin.prototype.handleLoginError = function(request) {
         if (request.status == 403) {
             this.invalidLogin();
         } else {
-            console.log("you have an error")
+            console.log("you have an error");
         }
     };
 
@@ -79,9 +79,9 @@ api = a57cfa42db36dcb9fbc22584782bcbab7e8c5de5
     };
 
     APILogin.prototype.fillForm = function() {
-        document.getElementById('username').value = 'therealmatt';
+        document.getElementById('username').value = 'DEMO-MATTSUPPORT-LIVE';
         document.getElementById('password').value = 'Welcome1';
-        document.getElementById('APIkey').value = 'a57cfa42db36dcb9fbc22584782bcbab7e8c5de5';
+        document.getElementById('APIkey').value = 'b1cf33b976cef6c5b3c80ab7c95d4fb8fa6c7739';
     };
 
     ZoneRecovery.APILogin = APILogin;

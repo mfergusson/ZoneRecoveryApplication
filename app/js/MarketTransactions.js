@@ -29,7 +29,7 @@
 
       getMarkets.onreadystatechange = this.setupMarkets.bind(this, getMarkets);
 
-      getMarkets.open('GET', 'https://web-api.ig.com/gateway/deal/markets?searchTerm=ftse', true);
+      getMarkets.open('GET', 'https://demo-api.ig.com/gateway/deal/markets?searchTerm=ftse', true);
 
       this.authManager.setRequestHeaders(getMarkets);
 
@@ -58,7 +58,7 @@
 
       var balance = new XMLHttpRequest();
 
-      balance.open('GET', 'https://web-api.ig.com/gateway/deal/accounts', true);
+      balance.open('GET', 'https://demo-api.ig.com/gateway/deal/accounts', true);
 
       this.authManager.setRequestHeader();
 
@@ -79,12 +79,11 @@
 
       var submitDeal = new XMLHttpRequest();
 
-      submitDeal.onreadystatechange = this.handleDeal;
+      submitDeal.onreadystatechange = this.handleDeal.bind(this, submitDeal);
 
-      submitDeal.open('POST', 'https://web-api.ig.com/gateway/deal/positions/otc', true);
+      submitDeal.open('POST', 'https://demo-api.ig.com/gateway/deal/positions/otc', true);
 
       this.authManager.setRequestHeaders(submitDeal);
-      submitDeal.setRequestHeader("Version", "2");
 
       var market = this.findMarket(epic);
 
@@ -94,75 +93,71 @@
               direction: direction,
               epic: market.epic,
               expiry: market.expiry,
-              forceOpen: false,
-              guaranteedStop: false,
+              forceOpen: null,
+              guaranteedStop: null,
               orderType: 'MARKET',
               size: betSizeValue,
               stopDistance: null,
-              trailingStop: false,
+              trailingStop: null,
           }
       ));
-
-      MarketTransactions.prototype.handleDeal = function() {
-        if (submitDeal.readyState < 4) {
-          return;
-        }
-
-        if (submitDeal.status === 200) {
-          var dealResponse = JSON.parse(submitDeal.response);
-          confirm(dealResponse);
-        } else {
-          console.log('broken');
-        }
-     };
   };
 
-    MarketTransactions.prototype.confirm = function(dealResponse) {
+  MarketTransactions.prototype.handleDeal = function(request) {
+    if (request.readyState < 4) {
+      return;
+    }
 
-      var getDealResponse = new XMLHttpRequest();
+    if (request.status === 200) {
+      var dealResponse = JSON.parse(request.response);
+      this.confirm(dealResponse.dealReference);
+    } else {
+      console.log('broken');
+    }
+ };
 
-      getDealResponse.onreadystatechange = setConfirms;
+ MarketTransactions.prototype.confirm = function(dealReference) {
 
-      var dealReferenceSend = dealResponse.dealReference;
+    var getDealResponse = new XMLHttpRequest();
 
-      getDealResponse.open('GET', `https://web-api.ig.com/gateway/deal/confirms/${dealReferenceSend}`, true);
+    getDealResponse.onreadystatechange = this.setConfirms.bind(this, getDealResponse);
 
-      ZoneRecovery.setRequestHeader();
+    getDealResponse.open('GET', 'https://demo-api.ig.com/gateway/deal/confirms/' + dealReference, true);
 
-      getDealResponse.send('');
+    this.authManager.setRequestHeaders(getDealResponse);
 
-      MarketTransactions.prototype.setConfirms = function() {
-        if (getDealResponse.readyState < 4) {
-          //show spinner
-          document.getElementById('sk-circle').className = "";
-          return;
-        }
+    getDealResponse.send('');
+ };
 
-        if (getDealResponse.status === 200) {
-          var dealStatusResponse = JSON.parse(getDealResponse.response);
-          document.getElementById('sk-circle').className = 'hidden';
+ MarketTransactions.prototype.setConfirms = function(request) {
+   if (request.readyState < 4) {
+     //show spinner
+     document.getElementById('sk-circle').className = "";
+     return;
+   }
 
-          if (dealStatusResponse.dealStatus === 'ACCEPTED'){
-            document.getElementById('success').className = 'success';
+   if (request.status === 200) {
+     var dealStatusResponse = JSON.parse(request.response);
+     document.getElementById('sk-circle').className = 'hidden';
 
-            setTimeout(function(){
-            document.getElementById('success').className = 'hidden';
-          }, 5000);
-          }
+     if (dealStatusResponse.dealStatus === 'ACCEPTED') {
+       document.getElementById('success').className = 'success';
 
-          else if (dealStatusResponse.dealStatus === 'REJECTED') {
-            document.getElementById('error').className = 'error';
-            document.getElementById('errorMessage').innerHTML = dealStatusResponse.reason;
+       setTimeout(function(){
+         document.getElementById('success').className = 'hidden';
+       }, 5000);
+     } else if (dealStatusResponse.dealStatus === 'REJECTED') {
+       document.getElementById('error').className = 'error';
+       document.getElementById('errorMessage').innerHTML = dealStatusResponse.reason;
 
-            setTimeout(function() {
-            document.getElementById('error').className = 'hidden';
-          }, 5000);
-          }
-        } else {
-          console.log('broken');
-        }
-      };
-   };
+       setTimeout(function() {
+         document.getElementById('error').className = 'hidden';
+       }, 5000);
+     }
+   } else {
+     console.log('broken');
+   }
+ };
 
   MarketTransactions.prototype.findMarket = function(epic) {
       for (var i = 0, marketLength = this.markets.length; i < marketLength; i++) {

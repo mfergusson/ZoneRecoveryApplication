@@ -58,7 +58,7 @@
       sessionStorage.clear();
       window.location='index.html';
 
-      request.close('DELETE', 'https://web-api.ig.com/gateway/deal/session', true);
+      request.close('DELETE', 'https://demo-api.ig.com/gateway/deal/session', true);
 
       this.lsClient.closeConnection();
   };
