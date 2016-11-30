@@ -31,15 +31,37 @@
         }
     };
 
-    LightstreamerSubscriptions.prototype.subscribeToOPU = function() {
-      var currentAccountId = this.authManager.getCurrentAccountId(),
-          deletePositionsSubscription = new Subscription(
-            'DISTINCT'
+    LightstreamerSubscriptions.prototype.subscribeToOPUandConfirms = function(handleOPU) {
+          var deletePositionsSubscription = new Subscription (
+            'DISTINCT',
+            'TRADE:' + this.authManager.getCurrentAccountId(),
             [
-              'TRDAE': currentAccountId,
-              'Constant status': 'DELETED';
+              // "CONFIRMS",
+              "OPU",
             ]
-          )
+          );
+
+      deletePositionsSubscription.setRequestedMaxFrequency("unfiltered");
+
+      // Set up the Lightstreamer event listeners
+      deletePositionsSubscription.addListener({
+         onSubscription: function () {
+            console.log('trade updates subscription succeeded');
+         },
+         onSubscriptionError: function (code, message) {
+            console.log('trade updates subscription failure: ' + code + " message: " + message);
+         },
+
+         onItemUpdate: handleOPU,
+
+         onItemLostUpdates: function () {
+            console.log("trade updates subscription - item lost");
+         }
+
+      });
+
+      // Subscribe to Lightstreamer
+      this.lsClient.subscribe(deletePositionsSubscription);
     };
 
     ZoneRecovery.LightstreamerSubscriptions = LightstreamerSubscriptions;

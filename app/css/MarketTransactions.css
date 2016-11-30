@@ -275,7 +275,3 @@ select option {
             transform: scale(1);
   }
 }
-
-.hidden {
-  display: none;
-}

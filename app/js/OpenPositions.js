@@ -12,6 +12,7 @@
 
   OpenPositions.prototype.init = function() {
     this.setupEventListeners();
+    this.lightstreamerSubscriptions.subscribeToOPUandConfirms(this.handleOPU.bind(this));
   };
 
   OpenPositions.prototype.setupEventListeners = function() {
@@ -117,6 +118,34 @@
    */
   OpenPositions.prototype.swapPositionDirection = function(direction) {
     return direction === 'BUY' ? 'SELL' : 'BUY';
+  };
+
+  OpenPositions.prototype.handleOPU = function(updateInfo) {
+
+       console.log("received trade update message: " + updateInfo.getItemName());
+
+       updateInfo.forEachField(function (fieldName, fieldPos, value) {
+         var response = JSON.parse(value);
+          if (value != 'INV') {
+            if (response === null) {
+              return;
+            } else {
+             console.log("field: " + fieldName + " - value: " + value);
+
+             document.getElementById('success').className = 'hidden';
+             document.getElementById('error').className = 'hidden';
+
+              if (response.status == "DELETED") {
+                document.getElementById('success').className = 'success';
+                setTimeout(function(){
+                  document.getElementById('success').className = 'hidden';
+                }, 5000);
+              } else {
+                document.getElementById('error').className = 'error';
+              };
+          };
+       };
+     });
   };
 
   ZoneRecovery.OpenPositions = OpenPositions;

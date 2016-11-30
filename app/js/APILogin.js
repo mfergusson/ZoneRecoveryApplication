@@ -12,6 +12,7 @@ api = b1cf33b976cef6c5b3c80ab7c95d4fb8fa6c7739
     function APILogin(authManager) {
         this.authManager = authManager;
         this.setupEventListeners();
+        this.init();
     }
 
     APILogin.prototype.setupEventListeners = function() {
@@ -19,6 +20,10 @@ api = b1cf33b976cef6c5b3c80ab7c95d4fb8fa6c7739
         document.getElementById("fillForm").addEventListener('click', this.fillForm.bind(this));
     };
 
+    APILogin.prototype.init = function() {
+      this.authManager.clearSession();
+    }
+    
     APILogin.prototype.login = function() {
         var request = new XMLHttpRequest(),
             username = document.getElementById("username").value || null,

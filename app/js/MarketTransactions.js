@@ -54,17 +54,6 @@
       }
   };
 
-  MarketTransactions.prototype.getBalance = function() {
-
-      var balance = new XMLHttpRequest();
-
-      balance.open('GET', 'https://demo-api.ig.com/gateway/deal/accounts', true);
-
-      this.authManager.setRequestHeader();
-
-      balance.send('');
-  };
-
   MarketTransactions.prototype.submitTicket = function() {
       var currencyOption = document.getElementById('currency-option').value;
       var epic = document.getElementById('markets').value;
@@ -93,12 +82,11 @@
               direction: direction,
               epic: market.epic,
               expiry: market.expiry,
-              forceOpen: null,
-              guaranteedStop: null,
+              forceOpen: false,
+              guaranteedStop: false,
               orderType: 'MARKET',
               size: betSizeValue,
               stopDistance: null,
-              trailingStop: null,
           }
       ));
   };

@@ -70,6 +70,10 @@
       }
   };
 
+  AuthManager.prototype.clearSession = function() {
+    localStorage.clear();
+  };
+
   ZoneRecovery.AuthManager = AuthManager;
 
 })(ZoneRecovery || {})
