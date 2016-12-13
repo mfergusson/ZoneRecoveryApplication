@@ -24,6 +24,9 @@
                 },
                 onStatusChange: function (status) {
                     console.log('Lightstreamer connection status:' + status);
+                },
+                onServerError: function(err) {
+                  console.log('ERROR');
                 }
             });
 
