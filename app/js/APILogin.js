@@ -7,23 +7,35 @@ api = b1cf33b976cef6c5b3c80ab7c95d4fb8fa6c7739
 
 (function(ZoneRecovery) {
 
-  'use strict';
+    'use strict';
 
+    /**
+     * @constructor
+     */
     function APILogin(authManager) {
         this.authManager = authManager;
         this.setupEventListeners();
         this.init();
     }
 
+    /**
+     * Set up event listeners that get triggered on change
+     */
     APILogin.prototype.setupEventListeners = function() {
         document.getElementById("Submit-Button").addEventListener('click', this.login.bind(this));
         document.getElementById("fillForm").addEventListener('click', this.fillForm.bind(this));
     };
 
+    /**
+     * Clear the session on load
+     */
     APILogin.prototype.init = function() {
-      this.authManager.clearSession();
+        this.authManager.clearSession();
     }
-    
+
+    /**
+     * Set up AJAX request that sends the users credentials including the API key
+     */
     APILogin.prototype.login = function() {
         var request = new XMLHttpRequest(),
             username = document.getElementById("username").value || null,
@@ -38,14 +50,18 @@ api = b1cf33b976cef6c5b3c80ab7c95d4fb8fa6c7739
         authManager.setRequestHeaders(request, apiKey);
         request.setRequestHeader("Version", "2");
 
-        request.send( JSON.stringify (
-            {
-                "identifier": username,
-                "password": password
-            }
-        ));
+        request.send(JSON.stringify({
+            "identifier": username,
+            "password": password
+        }));
     };
 
+    /**
+     * Handle whether the credentials were correct or incorrect
+     * @param {Object} request
+     * @param {String} apiKey
+     * @param {Object} data
+     */
     APILogin.prototype.handleLoginSuccess = function(request, apiKey, data) {
         if (request.readyState < 4) {
             return;
@@ -56,9 +72,9 @@ api = b1cf33b976cef6c5b3c80ab7c95d4fb8fa6c7739
 
             if (typeof(Storage) !== "undefined") {
                 var CST = request.getResponseHeader("CST"),
-                  XST = request.getResponseHeader("X-SECURITY-TOKEN"),
-                  currentAccountId = this.data.currentAccountId,
-                  lightstreamerEndpoint = this.data.lightstreamerEndpoint;
+                    XST = request.getResponseHeader("X-SECURITY-TOKEN"),
+                    currentAccountId = this.data.currentAccountId,
+                    lightstreamerEndpoint = this.data.lightstreamerEndpoint;
 
                 this.authManager.setSession(CST, XST, apiKey, currentAccountId, lightstreamerEndpoint);
 
@@ -71,18 +87,21 @@ api = b1cf33b976cef6c5b3c80ab7c95d4fb8fa6c7739
         }
     };
 
+    /**
+    * Handle when the users credentials are wrong
+    @param {Object} request
+    */
     APILogin.prototype.handleLoginError = function(request) {
         if (request.status == 403) {
-            this.invalidLogin();
+            alert("Invalid username, password or API key!");
         } else {
             console.log("you have an error");
         }
     };
 
-    APILogin.prototype.invalidLogin = function() {
-        alert("Invalid username, password or API key!");
-    };
-
+    /**
+     * Fill the form with correct login credentials
+     */
     APILogin.prototype.fillForm = function() {
         document.getElementById('username').value = 'DEMO-MATTSUPPORT-LIVE';
         document.getElementById('password').value = 'Welcome1';

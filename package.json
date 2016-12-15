@@ -18,6 +18,7 @@
   "homepage": "https://github.com/mfergusson/ZoneRecoveryApplication#readme",
   "devDependencies": {
     "gulp": "^3.9.1",
-    "gulp-connect": "^5.0.0"
+    "gulp-connect": "^5.0.0",
+    "jasmine": "^2.5.2"
   }
 }

@@ -2,6 +2,9 @@
 
     'use strict';
 
+    /**
+     * @constructor
+     */
     function OpenPositions(authManager) {
         this.authManager = authManager;
         this.openPositions = [];
@@ -9,16 +12,25 @@
         this.init();
     }
 
+    /**
+     * Initialising function that runs on load
+     */
     OpenPositions.prototype.init = function() {
         this.getPositions();
         this.setupEventListeners();
         this.lightstreamerSubscriptions.subscribeToOPUandConfirms(this.handleOPU.bind(this));
     };
 
+    /**
+     * Set up event listeners that get triggered on change
+     */
     OpenPositions.prototype.setupEventListeners = function() {
         document.getElementById("logoutBtn").addEventListener('click', this.authManager.invalidateSession.bind(this));
     };
 
+    /**
+     * AJAX request to get all of the users open positions
+     */
     OpenPositions.prototype.getPositions = function() {
         var CST = this.authManager.getCST(),
             API = this.authManager.getApiKey(),
@@ -35,6 +47,9 @@
         this.getOpenPositions.send('');
     };
 
+    /**
+     * Display all of the users open positions in a table
+     */
     OpenPositions.prototype.displayOpenPositions = function() {
         if (this.getOpenPositions.readyState < 4) {
             return;
@@ -67,22 +82,33 @@
         };
     };
 
+    /**
+     * Handle closing positions
+     */
     OpenPositions.prototype.setupClosePositionHandler = function() {
         var closeButtons = document.querySelectorAll('#positions .close');
 
         closeButtons.forEach(function(closeButton) {
             closeButton.addEventListener('click', this.handleClosePosition.bind(this), false);
         }.bind(this));
-    }
+    };
 
+    /**
+     * Find the unique position in the table
+     * @param {String} dealId
+     */
     OpenPositions.prototype.findPosition = function(dealId) {
         if (this.openPositions && this.openPositions.length) {
             return this.openPositions.find(function(openPosition) {
                 return openPosition.position.dealId === dealId;
             });
-        }
-    }
+        };
+    };
 
+    /**
+     * Close the clients current position
+     * @param {Object} element
+     */
     OpenPositions.prototype.handleClosePosition = function(element) {
         var dealId = element.currentTarget.id,
             openPosition = this.findPosition(dealId),
@@ -114,13 +140,17 @@
                   timeInForce: null,
                   quoteId: null,
             }));
-        }
+        };
     };
 
+    /**
+     * Handle errors involving closing positions
+     * @param {Object} request
+     */
     OpenPositions.prototype.handleError = function(request) {
         if (request.readyState !== 4) {
             return;
-        }
+        };
 
         if (request.status !== 200) {
             document.getElementById('error').className = 'error';
@@ -129,8 +159,8 @@
             setTimeout(function() {
                 document.getElementById('error').className = 'hidden';
             }, 3000);
-        }
-    }
+        };
+    };
 
     /**
      * Flips direction for position close rest request
@@ -140,6 +170,10 @@
         return direction === 'BUY' ? 'SELL' : 'BUY';
     };
 
+    /**
+     * Handle position updates
+     * @param {Object} updateInfo
+     */
     OpenPositions.prototype.handleOPU = function(updateInfo) {
 
         // console.log("received trade update message: " + updateInfo.getItemName());
