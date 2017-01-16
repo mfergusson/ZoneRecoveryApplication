@@ -51,8 +51,8 @@ api = b1cf33b976cef6c5b3c80ab7c95d4fb8fa6c7739
         request.setRequestHeader("Version", "2");
 
         request.send(JSON.stringify({
-            "identifier": username,
-            "password": password
+            "identifier": "DEMO-" + username.toUpperCase() + "-LIVE",
+            "password": password,
         }));
     };
 
@@ -103,7 +103,7 @@ api = b1cf33b976cef6c5b3c80ab7c95d4fb8fa6c7739
      * Fill the form with correct login credentials
      */
     APILogin.prototype.fillForm = function() {
-        document.getElementById('username').value = 'DEMO-MATTSUPPORT-LIVE';
+        document.getElementById('username').value = 'mattsupport';
         document.getElementById('password').value = 'Welcome1';
         document.getElementById('APIkey').value = 'b1cf33b976cef6c5b3c80ab7c95d4fb8fa6c7739';
     };

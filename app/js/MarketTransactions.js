@@ -100,11 +100,11 @@
             direction: direction,
             epic: market.epic,
             expiry: market.expiry,
-            forceOpen: false,
+            forceOpen: true,
             guaranteedStop: false,
             orderType: 'MARKET',
             size: betSizeValue,
-            stopDistance: null,
+            stopDistance: stopPointValue,
         }));
     };
 
